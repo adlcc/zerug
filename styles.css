@@ -1,0 +1,91 @@
+/* styles.css */
+
+
+.title {
+    font-family: 'Arial', serif; /* Fuente específica para el título */
+    font-size: 40px; /* Tamaño del texto del título */
+    color: #BBA8A8; /* Color del título */
+    margin-bottom: 20px;
+    letter-spacing: 2px; /* Espaciado entre letras */
+}
+
+body {
+    background-color: #342D2D; /* Color de fondo de la página */
+    font-family: Roboto, sans-serif;
+    font-weight: 100; /* Peso de fuente más delgado */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #342D2D; /* Color de fondo del recuadro */
+    padding: 20px;
+    border-radius: 8px;
+   
+}
+
+.title {
+    color: #BBA8A8; /* Color del título */
+    margin-bottom: 40px;
+    font-size: 50px; /* Tamaño del texto del título */
+    letter-spacing: 0px; /* Ajuste del interletrado */
+}
+
+.login-form {
+    width: 150%;
+    max-width: 300px;
+    background-color: white; /* Fondo blanco del formulario */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+input::placeholder {
+    color: #888; /* Color del texto de los placeholders */
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #342D2f;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #888;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="title">ZERUG</h2>
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="codigo">Código del proyecto</label>
+                <input type="text" id="codigo" name="codigo" placeholder="Código del proyecto" required>
+            </div>
+            <div class="form-group">
+                <label for="clave">Clave</label>
+                <input type="password" id="clave" name="clave" placeholder="Clave" required>
+            </div>
+            <button type="submit">Entrar</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+    </div>
+
+    <!-- Importar Firebase desde CDN con módulos -->
+    <script type="module">
+        // Importar las funciones necesarias desde Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+        
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE3mvO2o1j6td7GAxPD--_ejn9frIpfuI",
+            authDomain: "zerug-app.firebaseapp.com",
+            projectId: "zerug-app",
+            storageBucket: "zerug-app.appspot.com",
+            messagingSenderId: "347616316848",
+            appId: "1:347616316848:web:dbd1fec9246d34f0169a75"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Manejar el formulario de login
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const codigo = document.getElementById('codigo').value;
+            const clave = document.getElementById('clave').value;
+
+            // Consultar Firestore
+            try {
+                // Configurar la consulta para la colección 'Credentials'
+                const q = query(
+                    collection(db, "Credentials"),
+                    where("ProjectCode", "==", codigo),
+                    where("Clave", "==", clave)
+                );
+                
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    // Redirigir a la pantalla nuevoinc.html
+                    window.location.href = 'issues.html';
+                } else {
+                    document.getElementById('error-message').textContent = 'Código o clave incorrectos.';
+                }
+            } catch (error) {
+                console.error("Error al consultar Firestore: ", error);
+                document.getElementById('error-message').textContent = 'Error en la autenticación.';
+            }
+        });
+    </script>
+</body>
+</html>
+

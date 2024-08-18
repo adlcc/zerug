@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Incidente</title>
+
+    <!-- Importar la fuente Roboto desde Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif; /* Aplicar Roboto como fuente principal */
+            margin: 0;
+            padding: 0;
+            background-color: #65558F; /* Fondo azul */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            background-color: #fff;
+            padding: 20px; /* Ajustado para un padding interno adecuado */
+            border-radius: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center; /* Centra el contenido dentro del contenedor */
+            height: 90%;
+            position: relative; /* Permite el posicionamiento absoluto de elementos hijos */
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px; /* Espacio desde el borde superior del fondo blanco */
+            position: relative; /* Cambiado para alinear el botón salir dentro del fondo blanco */
+        }
+        .header h1 {
+            font-size: 20px; /* Tamaño del título */
+            font-weight: 100; /* Fuente thin */
+            margin: 0;
+        }
+        .header .button-secondary {
+            position: absolute;
+            top: 20px; /* Espacio desde el borde superior del fondo blanco */
+            right: 20px; /* Espacio desde el borde derecho del fondo blanco */
+            text-decoration: none; /* Quitar subrayado del enlace */
+        }
+        .header .button-secondary button {
+            background-color: #000; /* Relleno negro */
+            color: #fff; /* Letra blanca */
+            border: none;
+            padding: 5px 20px; /* Tamaño del botón */
+            font-size: 14px;
+            border-radius: 15px; /* Bordes redondeados */
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+        }
+        .header .button-secondary button:hover {
+            background-color: #333; /* Color de hover más oscuro */
+        }
+        h1 {
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: bold; /* Subtítulos en negrita */
+            margin: 30px 0; /* Espaciado reducido para separarlo del encabezado */
+        }
+        .button {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #65558F; /* Relleno del botón */
+            border: none;
+            border-radius: 50; /* Sin bordes redondeados */
+            cursor: pointer;
+            border-radius: 20px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .button:hover {
+            background-color: #4a447b; /* Color de hover ajustado */
+        }
+        .form-group {
+            margin-bottom: 20px; /* Espaciado entre campos del formulario */
+            text-align: center; /* Centra el contenido del campo de texto */
+        }
+        .form-group input, .form-group textarea {
+            width: 80%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 auto; /* Centra el campo de texto */
+            display: block;
+            font-family: 'Roboto', sans-serif; /* Aplicar Roboto a los textos del campo de texto */
+        }
+        .form-group textarea {
+            height: 200px; /* Altura suficiente para 10 líneas de texto */
+            resize: vertical; /* Permite cambiar el tamaño verticalmente */
+        }
+        .checkbox-group {
+            margin-top: 20px; /* Espaciado adicional */
+            display: flex;
+            justify-content: center; /* Centra los checkboxes */
+            flex-wrap: wrap; /* Permite que los checkboxes se envuelvan si es necesario */
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            margin: 0 20px; /* Espaciado entre los checkboxes */
+            font-size: 16px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            accent-color: #65558F; /* Color de acento para los checkboxes */
+            margin-right: 5px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra los botones horizontalmente */
+            margin-top: 20px;
+        }
+        .button-container .button {
+            margin-top: 20px; /* Espacio entre botones */
+        }
+        .form-group, .checkbox-group, .button-container {
+            margin-bottom: 10px; /* Espaciado general */
+        }
+
+        /* Estilos para el botón Regresar */
+        .back-button {
+            position: absolute;
+            top: 60px;
+            left: 40px;
+            background-color: #D6C1E4;
+            color: #fff;
+            border: none;
+            padding: 5px 20px; /* Tamaño del botón para que coincida con el botón "Salir" */
+            font-size: 14px;
+            border-radius: 15px; /* Bordes redondeados para que coincida con el botón "Salir" */
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .back-button:hover {
+            background-color: #65558F;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Botón Regresar -->
+        <a href="issues.html">
+            <button class="back-button">Regresar</button>
+        </a>
+
+        <!-- Encabezado -->
+        <div class="header">
+            <h1>Agregar incidente</h1> 
+            <a href="login.html" class="button-secondary">
+                <button>Salir</button>
+            </a>
+        </div>
+        
+        <!-- Título -->
+        <h2>Describa el problema</h2>
+        
+        <!-- Campo de texto para Nombre del incidente -->
+        <div class="form-group">
+            <input type="text" id="incidentName" placeholder="Nombre del incidente">
+        </div>
+
+        <!-- Campo de texto para Descripción del incidente -->
+        <div class="form-group">
+            <textarea id="incidentDescription" placeholder="Descripción del incidente"></textarea>
+        </div>
+        
+        <!-- Dispositivo -->
+        <h2>Dispositivo</h2>
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" name="device" value="android"> Android
+            </label>
+            <label>
+                <input type="checkbox" name="device" value="ios"> iOS
+            </label>
+        </div>
+        
+        <!-- Contenedor para botones centrados -->
+        <div class="button-container">
+            <button class="button" onclick="saveIncident()">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getFirestore, collection, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE3mvO2o1j6td7GAxPD--_ejn9frIpfuI",
+            authDomain: "zerug-app.firebaseapp.com",
+            projectId: "zerug-app",
+            storageBucket: "zerug-app.appspot.com",
+            messagingSenderId: "347616316848",
+            appId: "1:347616316848:web:dbd1fec9246d34f0169a75"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function getNextId() {
+            const counterRef = doc(db, 'counters', 'incidentIdCounter');
+            const counterSnap = await getDoc(counterRef);
+
+            let nextId = 1;
+            if (counterSnap.exists()) {
+                const data = counterSnap.data();
+                nextId = data.currentId + 1;
+                await updateDoc(counterRef, { currentId: nextId });
+            } else {
+                await setDoc(counterRef, { currentId: nextId });
+            }
+            return nextId;
+        }
+
+        window.saveIncident = async function() {
+            const name = document.getElementById('incidentName').value.trim();
+            const description = document.getElementById('incidentDescription').value.trim();
+            const checkboxes = document.querySelectorAll('input[name="device"]:checked');
+            const devices = Array.from(checkboxes).map(cb => cb.value);
+
+            if (!name || !description) {
+                alert('Por favor, complete todos los campos.');
+                return;
+            }
+
+            try {
+                const newId = await getNextId();
+                await setDoc(doc(db, 'incidentes', newId.toString()), {
+                    id: newId,
+                    nombre: name,
+                    descripcion: description,
+                    dispositivo: devices.join(', ')
+                });
+                alert('Incidente guardado exitosamente.');
+
+                document.getElementById('incidentName').value = '';
+                document.getElementById('incidentDescription').value = '';
+                checkboxes.forEach(cb => cb.checked = false);
+            } catch (error) {
+                console.error('Error al guardar el incidente: ', error);
+                alert('Hubo un error al guardar el incidente.');
+            }
+        };
+    </script>
+</body>
+</html>
+

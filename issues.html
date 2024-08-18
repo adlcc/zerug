@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incidentes</title>
+
+    <!-- Importar las bibliotecas de Firebase -->
+    <script type="module">
+        // Importar las funciones necesarias desde el SDK de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where, limit, startAfter } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE3mvO2o1j6td7GAxPD--_ejn9frIpfuI",
+            authDomain: "zerug-app.firebaseapp.com",
+            projectId: "zerug-app",
+            storageBucket: "zerug-app.appspot.com",
+            messagingSenderId: "347616316848",
+            appId: "1:347616316848:web:dbd1fec9246d34f0169a75"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const pageSize = 8;
+        let currentPage = 1;
+        let lastVisible = null;
+        let firstVisible = null;
+        let totalPages = 1;
+        let totalDocuments = 0; // Inicialmente 0, debe actualizarse con el total de documentos
+
+        async function loadIncidents(searchId = null) {
+            const tableBody = document.querySelector('#incidents-table tbody');
+            tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevos resultados
+            const pageNumbers = document.querySelector('.pagination');
+
+            try {
+                let q;
+                if (searchId) {
+                    q = query(collection(db, 'incidentes'), where('id', '==', searchId));
+                } else {
+                    q = collection(db, 'incidentes');
+                }
+
+                // Obtén el total de documentos para el cálculo de páginas
+                const totalQuery = await getDocs(q);
+                totalDocuments = totalQuery.size;
+                totalPages = Math.ceil(totalDocuments / pageSize);
+
+                // Consulta con límite y desplazamiento
+                q = query(q, limit(pageSize));
+
+                if (currentPage > 1) {
+                    q = query(q, startAfter(firstVisible));
+                }
+
+                const querySnapshot = await getDocs(q);
+                const docs = querySnapshot.docs;
+
+                if (docs.length > 0) {
+                    lastVisible = docs[docs.length - 1];
+                    firstVisible = docs[0];
+                    
+                    docs.forEach((doc) => {
+                        const data = doc.data();
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="id-circle">${data.id}</td>
+                            <td>${data.nombre}</td>
+                            <td>
+                                <a href="edit.html?id=${data.id}" class="edit-btn">
+                                    <img src="/Users/arelydelacruz/Desktop/zerug/zerug/lapiz3.webp" alt="Editar" class="edit-icon">
+                                </a>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    updatePagination();
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="3">No se encontraron resultados</td>`;
+                    tableBody.appendChild(row);
+
+                    pageNumbers.innerHTML = '';
+                }
+            } catch (error) {
+                console.error('Error al cargar los incidentes:', error);
+            }
+        }
+
+        function updatePagination() {
+            const pageNumbers = document.querySelector('.pagination');
+            pageNumbers.innerHTML = '';
+
+            // Determinar el rango de páginas a mostrar
+            const range = 3; // Número de páginas a mostrar antes y después de la página actual
+            let startPage = Math.max(1, currentPage - range);
+            let endPage = Math.min(totalPages, currentPage + range);
+
+            if (totalPages <= (range * 2 + 1)) {
+                startPage = 1;
+                endPage = totalPages;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageNumber = document.createElement('span');
+                pageNumber.textContent = i;
+                pageNumber.classList.add('page-number');
+                if (i === currentPage) {
+                    pageNumber.classList.add('active');
+                }
+                pageNumber.addEventListener('click', () => {
+                    currentPage = i;
+                    loadIncidents(); // Cargar la página seleccionada
+                });
+                pageNumbers.appendChild(pageNumber);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadIncidents();
+
+            const searchButton = document.querySelector('.search button');
+            searchButton.addEventListener('click', () => {
+                const searchId = document.querySelector('#search-id').value.trim();
+                if (searchId) {
+                    loadIncidents(searchId);
+                } else {
+                    loadIncidents();
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* Tus estilos CSS aquí */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #65558F; /* Fondo morado */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px; /* Ajustado para un diseño más amplio */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 90%;
+            overflow: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .header h1 {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px;
+        }
+        .header .button-secondary {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+        }
+        .header .button-secondary button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 5px 20px;
+            font-size: 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .header .button-secondary button:hover {
+            background-color: #333;
+        }
+        .search {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search label {
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        .search input {
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            margin-right: 10px;
+            width: 100%;
+            max-width: 300px; /* Limitar el ancho del campo de búsqueda */
+        }
+        .search button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 70px;
+        }
+        .search button:hover {
+            background-color: #0056b3;
+        }
+        .list {
+            margin-top: 10px;
+            flex: 1;
+        }
+        .list table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 5px;
+        }
+        .list th, .list td {
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+            border-bottom: 0px solid #ddd;
+        }
+        .list th {
+            background-color: #fff;
+            font-family: 'arial';
+        } 
+        .id-circle {
+            padding: 5px;
+            border-radius: 50%;
+            background-color: #D6C1E4;
+            color: #65558F;
+            font-weight: bold;
+            text-align: center;
+            width: 30px; /* Tamaño del círculo */
+            height: 30px; /* Tamaño del círculo */
+            line-height: 30px; /* Para centrar verticalmente el texto */
+            display: inline-block;
+        }
+        .list .edit-btn img {
+            width: 24px; /* Ajusta el tamaño según sea necesario */
+            height: 24px;
+            vertical-align: middle;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination span {
+            font-size: 14px;
+            color: #000;
+            background-color: transparent; /* Fondo transparente por defecto */
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 2px;
+            border: 0px solid #000; /* Borde negro */
+        }
+        .pagination .active {
+            background-color: #000; /* Fondo negro para la página activa */
+            color: #fff;
+        }
+
+        /* Estilos para el botón Agregar */
+        .add-button {
+            position: absolute;
+            bottom: 30px;
+            right: 150px;
+            background-color: #D6C1E4;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .add-button:hover {
+            background-color: #65558F;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Incidentes</h1>
+            <a href="login.html" class="button-secondary">
+                <button>Salir</button>
+            </a>
+        </div>
+        <div class="search">
+            <label for="search-id">Búsqueda por ID</label>
+            <div style="display: flex; width: 100%; gap: 10px; justify-content: center;">
+                <input type="text" id="search-id" placeholder="Introduce el ID del incidente">
+                <button>Buscar</button>
+            </div>
+        </div>
+        <div class="list">
+            <table id="incidents-table">
+                <thead>
+                   <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se añadirán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination">
+            <!-- Los números de página se añadirán dinámicamente aquí -->
+        </div>
+    </div>
+
+    <!-- Botón Agregar -->
+    <a href="nuevo inc.html">
+        <button class="add-button">Nuevo</button>
+    </a>
+</body>
+</html>
+
